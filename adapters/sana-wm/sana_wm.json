@@ -1,0 +1,92 @@
+{
+  "adapter_id": "sana_wm_final_v1",
+  "model_id": "SANA-WM streaming 2B 720p",
+  "interface_track": "pose_conditioned",
+  "action_reference_frame": "current_camera_cv_rh_body",
+  "representation": "trajectory_dsl",
+  "timing": {
+    "fps": 16,
+    "formal_frames_min": 21,
+    "formal_frames_max": 57,
+    "conditioning_frames": 1,
+    "native_tick_frames": 1,
+    "base_control_ticks": 4
+  },
+  "default_strength": {
+    "translation_per_frame": 0.025,
+    "rotation_degrees_per_frame": 0.6
+  },
+  "measurable_atomic_unit": {
+    "schema_version": "strideworld-measurable-atomic-unit-v1",
+    "native_ticks": 4,
+    "same_for_all_supported_actions": true,
+    "selection_status": "GENERATION_PILOT_ONLY_FORMAL_GT_BINDING_AND_CALIBRATION_PENDING",
+    "selection_evidence": "exact half-native-tick control; Task2 held-d8 is one action for 16 scored ticks"
+  },
+  "sequential": {
+    "supported": true,
+    "verified_runner": "site-b_final/runtime/lib/sana_wm_worker.py",
+    "native_worker": "site-b_final/runtime/lib/sana_wm_native.py",
+    "verification_source": "CPU v9 input preparation and final DSL; GPU complex acceptance pending",
+    "max_steps": 14,
+    "exact_route_lengths": [
+      5,
+      8,
+      11,
+      14
+    ],
+    "switch_granularity": "four-native-tick atomic boundary",
+    "per_step_reference_frame": "current_camera_cv_rh_body",
+    "single_inference_call_per_video": true,
+    "rgb_clip_concatenation": false
+  },
+  "native_horizon": {
+    "vae_rule": "8k+1",
+    "frozen_refiner_block_size": 3,
+    "joint_streaming_rule": "24k+1",
+    "allowed_frame_counts": [
+      25,
+      49,
+      73
+    ],
+    "padding_policy": "terminal key-release/coast tail; discarded before formal prefix video",
+    "formal_frame_counts_by_route_length": {
+      "5": 21,
+      "8": 33,
+      "11": 45,
+      "14": 57
+    }
+  },
+  "simultaneous": {
+    "supported": false,
+    "merge_fields": [],
+    "reason": "final main-table routes contain exactly one canonical action per step."
+  },
+  "actions": {
+    "NO_OP": {
+      "dsl_token": "none"
+    },
+    "MOVE_FORWARD": {
+      "dsl_token": "w"
+    },
+    "MOVE_LEFT": {
+      "dsl_token": "j"
+    },
+    "MOVE_BACKWARD": {
+      "dsl_token": "s"
+    },
+    "MOVE_RIGHT": {
+      "dsl_token": "l"
+    },
+    "YAW_LEFT": {
+      "dsl_token": "a"
+    },
+    "YAW_RIGHT": {
+      "dsl_token": "d"
+    }
+  },
+  "unsupported_reasons": {},
+  "formal_metric_scoring_allowed": false,
+  "gpu_execution_validation_status": "NOT_RUN_FOR_FINAL_COMPLEX",
+  "notes": "Native translation/rotation values are model units, not metres. The none tail uses official smooth key-release/coast and is excluded by formal prefix crop; do not call it a static NO_OP. Full4 protocol keeps native per-frame strengths unchanged; doubling the unit duration from two to four ticks doubles accumulated action dose."
+}

@@ -1,0 +1,34 @@
+diff -ruN a/metrics/task1/run_strideworld_task1.py b/metrics/task1/run_strideworld_task1.py
+--- a/metrics/task1/run_strideworld_task1.py
++++ b/metrics/task1/run_strideworld_task1.py
+@@ -93,8 +93,6 @@
+         return np.array([[target_w / source_w, 0.0, 0.0], [0.0, target_h / source_h, 0.0], [0.0, 0.0, 1.0]], dtype=np.float64)
+     scale = max(target_w / source_w, target_h / source_h)
+     resized_w, resized_h = int(round(source_w * scale)), int(round(source_h * scale))
+-    if mode == "center_crop_floor":
+-        return np.array([[resized_w / source_w, 0.0, -float((resized_w - target_w) // 2)], [0.0, resized_h / source_h, -float((resized_h - target_h) // 2)], [0.0, 0.0, 1.0]], dtype=np.float64)
+     return np.array([[resized_w / source_w, 0.0, (target_w - resized_w) / 2.0], [0.0, resized_h / source_h, (target_h - resized_h) / 2.0], [0.0, 0.0, 1.0]], dtype=np.float64)
+ 
+ 
+diff -ruN a/metrics/tools/constants.py b/metrics/tools/constants.py
+--- a/metrics/tools/constants.py
++++ b/metrics/tools/constants.py
+@@ -10,14 +10,14 @@
+ 
+ _SETTINGS = {
+     "pose_ransac_threshold_deg": 1.0,
+-    "min_pose_inlier_ratio": 0.3,
+-    "min_pose_anchor_coverage": 0.3,
++    "min_pose_inlier_ratio": 0.1,
++    "min_pose_anchor_coverage": 0.1,
+     "min_pose_points": 12,
+     "min_world_points": 12,
+     "min_track_confidence": 0.5,
+     "tracker_visibility_threshold": 0.9,
+-    "translation_floor_cm": 1.0,
+-    "rotation_floor_deg": 0.25,
++    "translation_floor_cm": 0.0,
++    "rotation_floor_deg": 0.0,
+     "depth_bins": 3,
+     "dose_max": 16,
+     "checkpoint_doses": tuple(range(1, 17)),

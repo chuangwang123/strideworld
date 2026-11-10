@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+work/
+finetune_table.csv
+scoring/tables/
+scoring/figures_src/out/
+scoring/figures_src/data_f1/
+scoring/metrics_v3/outputs/
+pipeline/build/

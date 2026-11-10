@@ -1,0 +1,133 @@
+{
+  "schema_version": "strideworld-v10-native-adapter-v1",
+  "adapter_id": "hunyuan_world_15_v10_d16_v1",
+  "model_id": "hy_world_15_hunyuan_exact",
+  "display_name": "HY-World 1.5 / WorldPlay",
+  "model_variant": "HY-World1.5-AR-480P-I2V-distill",
+  "variant_status": "BENCHMARK_EXACT_HUNYUAN_AR_VARIANT",
+  "interface_track": "official_pose_string",
+  "representation": "ordered_discrete_pose_tokens",
+  "action_reference_frame": "current_camera_body",
+  "seed_policy": {
+    "seeds": [0, 1, 2],
+    "reset_for_every_independent_video": true
+  },
+  "timing": {
+    "fps": 24,
+    "conditioning_frames": 1,
+    "decoded_intervals_per_native_tick": 4,
+    "atomic_held_dose": 16,
+    "atomic_action_ticks": 16,
+    "checkpoint_doses": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "checkpoint_frame_indices": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      28,
+      32,
+      36,
+      40,
+      44,
+      48,
+      52,
+      56,
+      60,
+      64
+    ],
+    "complex_exact_lengths": [
+      8,
+      11,
+      14
+    ],
+    "terminal_scored_noop_ticks": 0,
+    "length_contracts": {
+      "8": {
+        "total_noop_ticks": 3,
+        "raw_frames": 45,
+        "formal_frames": 33
+      },
+      "11": {
+        "total_noop_ticks": 4,
+        "raw_frames": 61,
+        "formal_frames": 45
+      },
+      "14": {
+        "total_noop_ticks": 5,
+        "raw_frames": 77,
+        "formal_frames": 57
+      },
+      "16": {
+        "total_noop_ticks": 3,
+        "raw_frames": 77,
+        "formal_frames": 65
+      }
+    }
+  },
+  "native_control": {
+    "translation_per_native_tick": 0.08,
+    "yaw_degrees_per_native_tick": 3.0,
+    "cross_model_metric_unit_claim": false,
+    "single_native_pipeline_call": true,
+    "external_rgb_chaining": false,
+    "official_alignment_rule": "latent_pose_count_divisible_by_4"
+  },
+  "actions": {
+    "MOVE_FORWARD": {
+      "token": "w"
+    },
+    "MOVE_BACKWARD": {
+      "token": "s"
+    },
+    "MOVE_LEFT": {
+      "token": "a"
+    },
+    "MOVE_RIGHT": {
+      "token": "d"
+    },
+    "YAW_LEFT": {
+      "token": "left"
+    },
+    "YAW_RIGHT": {
+      "token": "right"
+    },
+    "NO_OP": {
+      "token": "none"
+    }
+  },
+  "capability": {
+    "task2_atomic": "READY",
+    "task1_task3_shared_complex": "V10_STATIC_CONTRACT_READY_NO_NEW_GPU_SMOKE",
+    "supported_complex_exact_lengths": [
+      8,
+      11,
+      14
+    ],
+    "simultaneous_actions": false
+  },
+  "evidence": {
+    "accepted_native_runner": "scripts/run_hy_world15_hunyuan_exact_unified_v7.py",
+    "accepted_gpu_smoke_scope": "legacy v9 only; no v10 smoke requested",
+    "full_final_gpu_evidence": "V10_STATIC_VALIDATION_ONLY",
+    "generation_scope": "v10 30 scenes / 134 cases; seed0 has 6 D16 atoms plus 8 G1-G4 routes; seed1/2 each have 6 D16 atoms"
+  }
+}

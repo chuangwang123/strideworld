@@ -1,0 +1,8 @@
+{
+ "model": "<model key>",
+ "index": "<work>/<model>/index.jsonl",
+ "source_results": "<work>/<model>/common/results",
+ "output_root": "<work>/<model>/dualgate",
+ "repo": "pipeline/build/dualgate",
+ "normalized_index": "<work>/<model>/common/results/details/normalized_index.jsonl"
+}

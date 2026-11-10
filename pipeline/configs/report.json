@@ -1,0 +1,20 @@
+{
+ "root": "<work>/report",
+ "repo": "pipeline/build/report",
+ "models": {
+  "<model key>": "<work>/<model>/dualgate/gated_010"
+ },
+ "code_sha256": {
+  "metrics/task2/task2_metrics.py": "4ebc2598e08655a60885db3f2a370a98be6b243fd320b942b4d6d381e0b927dc",
+  "metrics/task2/export_unit_horizons.py": "1191d0adbae367e18fc911784069ddb9dd7203cdd7356dcd84184e8d0e779310",
+  "metrics/task3/evaluate_from_unit_json.py": "216532eae1b6c57b3372c4f50a148b703217c91aaefc8dd4c428da554592231c",
+  "metrics/tools/se2.py": "f67d18f84aeb7733a430f5624f302dc9ee9b9c09500dc60037fd2654af954eca",
+  "metrics/tools/constants.py": "bb778b9051df301882267022d66965e0ee97f03a6bafe756b4c0dc687772390e",
+  "metrics/paper_reporting/__init__.py": "963a54b69c1005b0898de28a8f4fd2f99c61877b26c509461b5375cb5a5e97eb",
+  "metrics/paper_reporting/__main__.py": "d759352a64049a057d451128c056269a718eda41bd1add70f76d65456734cf61",
+  "metrics/paper_reporting/atomic.py": "164dfc3fa762eb54162fded9e332c0847405a994605bcf89535fd50ed954fb8a",
+  "metrics/paper_reporting/composition.py": "3d5fa6f4cb56c981b6bbae1f7ce76407acdf855f9c97cc0ffafd2134ed7e99cf",
+  "metrics/paper_reporting/report.py": "87a2d11f031cf98b38a7fe5bb01a1c0e4fd5f326025fb6f0c505cf895ec43afb",
+  "metrics/paper_reporting/variability.py": "d7618b0ebd5202e7ad21a009fc94e65d5370f0fbaa3a6948748b2403b67694d3"
+ }
+}

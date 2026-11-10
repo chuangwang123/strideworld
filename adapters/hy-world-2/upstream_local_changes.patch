@@ -1,0 +1,135 @@
+diff --git a/hyworld2/worldgen/models/worldstereo_wrapper.py b/hyworld2/worldgen/models/worldstereo_wrapper.py
+index 4789e88..714132f 100644
+--- a/hyworld2/worldgen/models/worldstereo_wrapper.py
++++ b/hyworld2/worldgen/models/worldstereo_wrapper.py
+@@ -167,6 +167,18 @@ class WorldStereo:
+         cfg = OmegaConf.create(cls._load_hf_config(json_cfg_path))
+         model_weights_path = safetensors_path
+ 
++        # Diffusers still calls the Hub model-info endpoint for sharded weights
++        # when it receives a repo ID, even with local_files_only=True. Resolve
++        # the already-populated cache to its snapshot directory first so an
++        # offline HOST job can load every Wan component without network access.
++        if local_files_only and not os.path.isdir(str(cfg.base_model)):
++            from huggingface_hub import snapshot_download
++
++            cfg.base_model = snapshot_download(
++                repo_id=str(cfg.base_model),
++                local_files_only=True,
++            )
++
+         model_type = subfolder
+         if model_type not in SUPPORTED_MODEL_TYPES:
+             raise ValueError(
+@@ -477,4 +489,4 @@ class WorldStereo:
+                 vae_compile_mode="max-autotune",
+             )
+ 
+-        raise ValueError(f"Unknown model_type: {model_type!r}")
+\ No newline at end of file
++        raise ValueError(f"Unknown model_type: {model_type!r}")
+diff --git a/hyworld2/worldgen/src/retrieval_wm.py b/hyworld2/worldgen/src/retrieval_wm.py
+index 401a039..8801fda 100755
+--- a/hyworld2/worldgen/src/retrieval_wm.py
++++ b/hyworld2/worldgen/src/retrieval_wm.py
+@@ -822,8 +822,14 @@ class PanoramaMemoryBank:
+         rank0_log(f"Initializing SAM3 Model...")
+         if sam3_model is None or sam3_processor is None:
+             from transformers import Sam3VideoModel, Sam3VideoProcessor
+-            self.sam3_model = Sam3VideoModel.from_pretrained("facebook/sam3").to(device, dtype=torch.bfloat16)
+-            self.sam3_processor = Sam3VideoProcessor.from_pretrained("facebook/sam3")
++            sam3_repo_id = os.environ.get("SAM3_MODEL_PATH", "facebook/sam3")
++            sam3_local = os.path.isdir(sam3_repo_id)
++            self.sam3_model = Sam3VideoModel.from_pretrained(
++                sam3_repo_id, local_files_only=sam3_local
++            ).to(device, dtype=torch.bfloat16)
++            self.sam3_processor = Sam3VideoProcessor.from_pretrained(
++                sam3_repo_id, local_files_only=sam3_local
++            )
+         else:
+             self.sam3_model = sam3_model
+             self.sam3_processor = sam3_processor
+@@ -1136,6 +1142,7 @@ class PanoramaMemoryBank:
+                     "--input_path", f"{self.world_mirror_dir}/images",
+                     "--prior_cam_path", f"{self.world_mirror_dir}/cameras.json",
+                     "--strict_output_path", f"{self.world_mirror_dir}/results",
++                    "--pretrained_model_name_or_path", os.environ.get("HY_WORLD2_MODEL_PATH", "tencent/HY-World-2.0"),
+                     "--target_size", "832",
+                     "--log_time",
+                     "--no_interactive",
+@@ -1881,4 +1888,4 @@ class PanoramaMemoryBank:
+                 temp_pcd = trimesh.PointCloud(vertices=temp_points, colors=temp_colors)
+                 temp_pcd.export(f"{self.root_path}/render_results/{self.results_path}/tmp_debug/pointclouds/{view_id}-{traj_id}-pcd.ply")
+ 
+-        dist.barrier()
+\ No newline at end of file
++        dist.barrier()
+diff --git a/hyworld2/worldgen/traj_generate.py b/hyworld2/worldgen/traj_generate.py
+index 20516c2..bba16f1 100755
+--- a/hyworld2/worldgen/traj_generate.py
++++ b/hyworld2/worldgen/traj_generate.py
+@@ -73,11 +73,17 @@ LLM_PORT = 8000
+ 
+ SAM_BATCH_SIZE = 4
+ MAX_MASK_COUNT = 5
+-HF_CACHE_DIR = os.path.expanduser("~/.cache/huggingface/hub")
++HF_CACHE_DIR = os.environ.get(
++    "HF_HUB_CACHE",
++    os.path.join(
++        os.environ.get("HF_HOME", os.path.expanduser("~/.cache/huggingface")),
++        "hub",
++    ),
++)
+ ZIM_REPO_ID = "naver-iv/zim-anything-vitl"
+ ZIM_SUBFOLDER = "zim_vit_l_2092"
+ GD_REPO_ID = "IDEA-Research/grounding-dino-tiny"
+-SAM3_REPO_ID = "facebook/sam3"
++SAM3_REPO_ID = os.environ.get("SAM3_MODEL_PATH", "facebook/sam3")
+ MOGE_ID = "Ruicheng/moge-2-vitl-normal"
+ 
+ 
+@@ -204,8 +210,13 @@ if __name__ == '__main__':
+ 
+     # VLM & SAM3
+     client = OpenAI(api_key="EMPTY", base_url=f"http://{LLM_ADDR}:{LLM_PORT}/v1")
+-    sam3_model = Sam3Model.from_pretrained("facebook/sam3").to(device)
+-    sam3_processor = Sam3Processor.from_pretrained("facebook/sam3")
++    sam3_local = os.path.isdir(SAM3_REPO_ID)
++    sam3_model = Sam3Model.from_pretrained(
++        SAM3_REPO_ID, local_files_only=sam3_local
++    ).to(device)
++    sam3_processor = Sam3Processor.from_pretrained(
++        SAM3_REPO_ID, local_files_only=sam3_local
++    )
+     print("Models Initializing over.")
+ 
+     # Near-view rotations used by regular trajectory generation.
+diff --git a/hyworld2/worldgen/video_gen.py b/hyworld2/worldgen/video_gen.py
+index 6b42100..46f8c90 100755
+--- a/hyworld2/worldgen/video_gen.py
++++ b/hyworld2/worldgen/video_gen.py
+@@ -23,7 +23,7 @@ from src.sp_utils.parallel_states import initialize_parallel_state
+ os.environ["TOKENIZERS_PARALLELISM"] = "false"
+ timer = Timer()
+ 
+-SAM3_REPO_ID = "facebook/sam3"
++SAM3_REPO_ID = os.environ.get("SAM3_MODEL_PATH", "facebook/sam3")
+ MOGE_ID = "Ruicheng/moge-2-vitl-normal"
+ 
+ if __name__ == '__main__':
+@@ -77,8 +77,13 @@ if __name__ == '__main__':
+     # == setup models ==
+     # Note: FP8 quantization is done INSIDE init_wan_from_cfg, BEFORE FSDP sharding
+     moge_model = MoGeModel.from_pretrained(MOGE_ID).to(device)
+-    sam3_model = Sam3VideoModel.from_pretrained(SAM3_REPO_ID).to(device, dtype=torch.bfloat16)
+-    sam3_processor = Sam3VideoProcessor.from_pretrained(SAM3_REPO_ID)
++    sam3_local = os.path.isdir(SAM3_REPO_ID)
++    sam3_model = Sam3VideoModel.from_pretrained(
++        SAM3_REPO_ID, local_files_only=sam3_local
++    ).to(device, dtype=torch.bfloat16)
++    sam3_processor = Sam3VideoProcessor.from_pretrained(
++        SAM3_REPO_ID, local_files_only=sam3_local
++    )
+     rank0_log("Model init over...")
+ 
+     # reset it to the fp32 as we make diffusion scheduler in fp32

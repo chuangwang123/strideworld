@@ -1,0 +1,66 @@
+{
+ "schema_version": "strideworld-model-adapter-profiles-v1",
+ "protocol": {
+  "seed": "record.seed (0, 1, or 2); reset for every independent rollout",
+  "condition_policy": "first RGB frame plus frozen prompt only",
+  "future_frame_policy": "forbidden",
+  "action_order_policy": "ordered sequential camera-body controls",
+  "camera_axes": "x-right,y-down,z-forward",
+  "formal_scoring": "only frames through the last unit boundary; native tail is unscored"
+ },
+ "models": {
+  "worldplay_ar_rl_official": {
+   "source_commit": "1588e1336e842b03b0a7860c654ebd7c46bb065e",
+   "hf_repo": "tencent/HY-WorldPlay",
+   "hf_revision": "f4c29235647707b571479a69b569e4166f9f5bf8",
+   "weight_variant": "ar_rl_model",
+   "adapter": "official pose-string tokens",
+   "decoded_frames_per_unit": 4,
+   "translation_per_unit": 0.08,
+   "yaw_degrees_per_unit": 3.0,
+   "inference_steps": 40,
+   "cfg_free": false
+  },
+  "matrix_game_35_distilled_fp": {
+   "source_commit": "fbf7def0693ae14f745ba35bf2a26215d4ef991d",
+   "hf_repo": "RiemannDynamics/Matrix-Game-3.5-Distilled",
+   "hf_revision": "0b38ca0b0dda2bb994c570e183ad36d1acd53be2",
+   "weight_variant": "first-person.safetensors",
+   "adapter": "explicit c2w and pixel intrinsics npz",
+   "decoded_frames_per_unit": 8,
+   "translation_per_unit": 0.1,
+   "yaw_degrees_per_unit": 0.6,
+   "frames_per_block": 80,
+   "camera_poses_per_block": 84,
+   "inference_steps": 3,
+   "student_cfg_scale": 3.0
+  },
+  "solarwm_h3_stage2_fix": {
+   "source_commit": "552cea30c8b1406c1f2c36c37dc233588d623306",
+   "hf_repo": "junchaoh-cs/SolarWM-H3-33B",
+   "hf_revision": "711d516329b9eaa395888c6ca724e0567bd3bdcb",
+   "weight_variant": "SolarWM-h3-33B-sgf-stage2-158f-fix/ema.pt",
+   "adapter": "public source-length demo image+camera input",
+   "decoded_frames_per_unit": 8,
+   "translation_per_unit": 0.2,
+   "yaw_degrees_per_unit": 2.5,
+   "inference_steps": 4,
+   "checkpoint_step": 3900,
+   "weight_source": "ema"
+  },
+  "evoke_turbo_i2v": {
+   "source_commit": "1d271be45128bbda4263e9e3c7dfc8f6ba260492",
+   "hf_repo": "AlayaLab/Evoke-Turbo",
+   "hf_revision": "fe5afb975e08bff47f5b23087e8f6f90316aee4d",
+   "weight_variant": "merged Turbo transformer with Evoke base and ViGeo",
+   "adapter": "ViGeo i2v cam_c2w/intrinsics npz",
+   "decoded_frames_per_unit": 8,
+   "translation_per_unit": 0.16666666666666666,
+   "yaw_degrees_per_unit": 5.0,
+   "frames_per_chunk": 36,
+   "chunk_count_policy": "ceil((8 * route_length + 3) / 36)",
+   "inference_steps": 3,
+   "cfg_free": true
+  }
+ }
+}

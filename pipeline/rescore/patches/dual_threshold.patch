@@ -1,0 +1,132 @@
+diff -ruN a/metrics/run_full_evaluation.py b/metrics/run_full_evaluation.py
+--- a/metrics/run_full_evaluation.py
++++ b/metrics/run_full_evaluation.py
+@@ -53,6 +53,10 @@
+ 
+ READY = "GENERATION_READY"
+ TRANSLATION_ACTIONS = frozenset(("W", "S", "A", "D"))
++FROZEN_MODEL_SOURCE_TRANSFORMS = {
++    "dreamx-world": "stretch",
++    "matrix-game-2": "center_crop",
++}
+ 
+ 
+ def _safe(value: str) -> str:
+@@ -92,6 +96,16 @@
+ 
+ 
+ def _source_transform(row: Mapping[str, Any]) -> str:
++    frozen = FROZEN_MODEL_SOURCE_TRANSFORMS.get(str(row.get("model")))
++    if (
++        frozen
++        and row.get("control_profile") == "original_d16_v3"
++        and row.get("status") == READY
++        and re.fullmatch(r"[0-9a-f]{64}", str(row.get("condition_sha256", "")))
++        and re.fullmatch(r"[0-9a-f]{64}", str(row.get("video_sha256", "")))
++        and "video hash" in str(row.get("verification", ""))
++    ):
++        return frozen
+     generation = Path(str(row.get("generation_record", "")))
+     if generation.is_file():
+         payload = json.loads(generation.read_text())
+@@ -99,8 +113,36 @@
+         if executed.is_file():
+             value = json.loads(executed.read_text()).get("source_transform")
+             mode = value.get("mode") if isinstance(value, dict) else value
+-            if mode in {"center_crop", "stretch", "center_crop_floor"}:
++            if mode in {"center_crop", "stretch"}:
+                 return str(mode)
++            # Preserve audited migration labels while passing the canonical
++            # geometry mode to the unchanged evaluator.
++            if mode == "hy15_center_crop" and row.get("model") == "hunyuan-world-1.5":
++                return "center_crop"
++            if mode == "hy2_stretch" and row.get("model") == "hy-world-2":
++                return "stretch"
++        if (
++            payload.get("model_id") == "sana_wm"
++            and payload.get("control", {}).get("schema_version")
++            == "strideworld-sana-wm-final12-control-v1"
++            and payload.get("execution_output", {}).get("postprocess_contract")
++            == "SANA_streaming_exact_condition_prepend_and_formal_prefix_crop_v1"
++            and (
++                payload.get("execution_output", {}).get("width"),
++                payload.get("execution_output", {}).get("height"),
++            )
++            == (1280, 704)
++        ):
++            expected_sha256 = row.get("generation_record_sha256")
++            source_record = Path(str(row.get("source_record", "")))
++            if not expected_sha256 and source_record.is_file():
++                source_payload = json.loads(source_record.read_text())
++                if row.get("source_record_sha256") == sha256_file(source_record):
++                    expected_sha256 = source_payload.get("internal_provenance", {}).get(
++                        "generation_record_sha256"
++                    )
++            if expected_sha256 == sha256_file(generation):
++                return "center_crop"
+     raise ValueError(f"missing verified source_transform: {row.get('record_id')}")
+ 
+ 
+@@ -232,11 +274,7 @@
+ 
+ 
+ def _pose_worker(gpu: int, config: dict[str, Any], tasks: Any, results: Any) -> None:
+-    try:
+-        tracker = PersistentCoTracker(config, gpu)
+-    except Exception as error:
+-        results.put({"status": "worker_init_error", "gpu": gpu, "error": repr(error), "traceback": traceback.format_exc()})
+-        return
++    tracker: PersistentCoTracker | None = None
+     while True:
+         row = tasks.get()
+         if row is None:
+@@ -254,6 +292,13 @@
+                              "gpu": gpu, "resumed": True, "camera_valid_frames": count,
+                              "n_frames": frames, "elapsed_sec": time.perf_counter() - started})
+                 continue
++            if tracker is None:
++                try:
++                    tracker = PersistentCoTracker(config, gpu)
++                except Exception as error:
++                    results.put({"status": "worker_init_error", "gpu": gpu, "error": repr(error),
++                                 "traceback": traceback.format_exc()})
++                    return
+             anchor_path = Path(str(row["_anchor_path"]))
+             local_gt = output / "gt"; local_gt.mkdir(exist_ok=True)
+             local_anchor = local_gt / "anchors.npz"
+diff -ruN a/metrics/task1/run_strideworld_task1.py b/metrics/task1/run_strideworld_task1.py
+--- a/metrics/task1/run_strideworld_task1.py
++++ b/metrics/task1/run_strideworld_task1.py
+@@ -93,8 +93,6 @@
+         return np.array([[target_w / source_w, 0.0, 0.0], [0.0, target_h / source_h, 0.0], [0.0, 0.0, 1.0]], dtype=np.float64)
+     scale = max(target_w / source_w, target_h / source_h)
+     resized_w, resized_h = int(round(source_w * scale)), int(round(source_h * scale))
+-    if mode == "center_crop_floor":
+-        return np.array([[resized_w / source_w, 0.0, -float((resized_w - target_w) // 2)], [0.0, resized_h / source_h, -float((resized_h - target_h) // 2)], [0.0, 0.0, 1.0]], dtype=np.float64)
+     return np.array([[resized_w / source_w, 0.0, (target_w - resized_w) / 2.0], [0.0, resized_h / source_h, (target_h - resized_h) / 2.0], [0.0, 0.0, 1.0]], dtype=np.float64)
+ 
+ 
+diff -ruN a/metrics/task3/task3_metrics.py b/metrics/task3/task3_metrics.py
+--- a/metrics/task3/task3_metrics.py
++++ b/metrics/task3/task3_metrics.py
+@@ -469,7 +469,7 @@
+              f"- Number of route pairs: {document.get('n_pairs', 0)}",
+              "- Current trajectory classification: G1 is inverse (different action multisets); G2/G3/G4 are order (same action multiset, different execution order).", "",
+              "## Computation", "",
+-             f"Each route reads the observed SE(2) at the initial frame and at every unit-action boundary; every boundary must satisfy `M_t` (valid camera, `pose_inlier_ratio>={document.get('run_profile', {}).get('min_pose_inlier_ratio', DEFAULT_MIN_POSE_INLIER_RATIO)}`, `pose_anchor_coverage>={document.get('run_profile', {}).get('min_pose_anchor_coverage', DEFAULT_MIN_POSE_ANCHOR_COVERAGE)}`). The predicted trajectory uses the short-range atomic operators of the same model/scene/case/seed, estimated from Task 2 checkpoints k=1..4, right-multiplied in execution order; the complex route itself is not truncated to 4 steps. The relation error is the translation and yaw distance between `Delta_obs = Pa_obs^-1 Pb_obs` and `Delta_pred = Pa_pred^-1 Pb_pred`; the self error compares the observed and predicted endpoints of each side. The normalized distance is `sqrt((D_t/u_t)^2+(D_r/u_r)^2)` and the score is `exp(-d_n)`; this report evaluates the pass rate at `tau=0.5`. Each unit action must also translate at least 1 cm or rotate at least 0.25 deg; otherwise it is marked `STATIC_SHORTCUT`.", "",
++             f"Each route reads the observed SE(2) at the initial frame and at every unit-action boundary; every boundary must satisfy `M_t` (valid camera, `pose_inlier_ratio>={document.get('run_profile', {}).get('min_pose_inlier_ratio', DEFAULT_MIN_POSE_INLIER_RATIO)}`, `pose_anchor_coverage>={document.get('run_profile', {}).get('min_pose_anchor_coverage', DEFAULT_MIN_POSE_ANCHOR_COVERAGE)}`). The predicted trajectory uses the short-range atomic operators of the same model/scene/case/seed, estimated from Task 2 checkpoints k=1..4, right-multiplied in execution order; the complex route itself is not truncated to 4 steps. The relation error is the translation and yaw distance between `Delta_obs = Pa_obs^-1 Pb_obs` and `Delta_pred = Pa_pred^-1 Pb_pred`; the self error compares the observed and predicted endpoints of each side. The normalized distance is `sqrt((D_t/u_t)^2+(D_r/u_r)^2)` and the score is `exp(-d_n)`; this report evaluates the pass rate at `tau=0.5`. Each unit action must also translate at least {document.get('spec', {}).get('translation_floor_cm', TRANSLATION_FLOOR_CM):g} cm or rotate at least {document.get('spec', {}).get('rotation_floor_deg', ROTATION_FLOOR_DEG):g} deg; otherwise it is marked `STATIC_SHORTCUT`.", "",
+              "## Results by Model and Relation Family", "", "|Model|Relation family|Pairs|Raw measurable|Normalized measurable|Interface coverage|Measurability coverage|Normalization coverage|E2E pass rate|Relation d_n median|Relation score median|self d_n median|", "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+     for key, summary in document.get("model_relation_summary", {}).items():
+         model, family = key.split("|", 1); rel = summary.get("relation", {}); self_d = summary.get("self_mean_d_n_median")
+diff -ruN a/metrics/tools/constants.py b/metrics/tools/constants.py
+--- a/metrics/tools/constants.py
++++ b/metrics/tools/constants.py
+@@ -17,7 +17,7 @@
+     "min_track_confidence": 0.5,
+     "tracker_visibility_threshold": 0.9,
+     "translation_floor_cm": 1.0,
+-    "rotation_floor_deg": 0.25,
++    "rotation_floor_deg": 0.05,
+     "depth_bins": 3,
+     "dose_max": 16,
+     "checkpoint_doses": tuple(range(1, 17)),

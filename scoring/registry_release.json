@@ -1,0 +1,76 @@
+{
+ "_doc": "Models scored after the thirteen benchmark models, in table order. Paths are relative to the data root ($SW_DATA) written by scoring/assemble.py. Fields are described in metrics_v3/registry.py.",
+ "base_dir": "base",
+ "sft_dir": "sft",
+ "base_external": {
+  "evoke-turbo": {
+   "scene_stability": 75.0,
+   "musiq": 69.6,
+   "aesthetic": 59.9,
+   "source": "scoring report of the run"
+  },
+  "worldcrafter-fast": {
+   "scene_stability": 77.52330388030488,
+   "musiq": 66.14844679136526,
+   "aesthetic": 59.30485535379765,
+   "source": "scoring report of the run"
+  },
+  "matrix-game-2": {
+   "scene_stability": 73.32398990592804,
+   "musiq": 68.48,
+   "aesthetic": 57.47,
+   "source": "scoring report of the run"
+  },
+  "matrix-game-3": {
+   "scene_stability": 74.1613706365936,
+   "musiq": 72.06,
+   "aesthetic": 58.32,
+   "source": "scoring report of the run"
+  }
+ },
+ "_doc_base_external": "Scene stability, MUSIQ and Aesthetic of the EVOKE, WorldCrafter and Matrix-Game 2.0/3.0 runs of Table 2 (runs at the commands of App. A, Table A.2).",
+ "models": [
+  {
+   "key": "solarwm-h3",
+   "name": "SolarWM",
+   "dir": "solarwm-h3",
+   "scores": "all_scores.json",
+   "depths": "initial_view_depths.csv",
+   "units": "unit_estimates.csv",
+   "obs": "obs/*.observations.csv",
+   "main_per_video": "main_per_video.csv",
+   "frames": 128,
+   "external": {
+    "scene_stability": 86.5,
+    "musiq": 73.0,
+    "aesthetic": 60.8,
+    "source": "scoring report of the run"
+   },
+   "per_video_response_out": "per_video_response_solar.csv.gz",
+   "per_checkpoint_out": "per_checkpoint_scores_solar.csv.gz",
+   "gate_sensitivity_out": "gate_sensitivity_solar.csv",
+   "values_out": "solar_values.csv"
+  },
+  {
+   "key": "hy-worldplay",
+   "name": "HY-WorldPlay",
+   "dir": "hy-worldplay",
+   "scores": "all_scores.json",
+   "depths": "initial_view_depths.csv",
+   "units": "unit_estimates.csv",
+   "obs": "obs/*.observations.csv",
+   "main_per_video": "main_per_video.csv",
+   "frames": 64,
+   "external": {
+    "scene_stability": 76.77580115564933,
+    "musiq": 73.0433785284941,
+    "aesthetic": 58.05974900389889,
+    "source": "scoring report of the run"
+   },
+   "per_video_response_out": "per_video_response_hy_worldplay.csv.gz",
+   "per_checkpoint_out": "per_checkpoint_scores_hy_worldplay.csv.gz",
+   "gate_sensitivity_out": "gate_sensitivity_hy_worldplay.csv",
+   "values_out": "hy_worldplay_values.csv"
+  }
+ ]
+}

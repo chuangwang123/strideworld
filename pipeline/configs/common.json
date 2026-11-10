@@ -1,0 +1,20 @@
+{
+ "variant": "<model>_common010",
+ "model": "<model key, e.g. matrix-game-3.5>",
+ "repo": "pipeline/build/common",
+ "source_repo": "pipeline/build/measure",
+ "source_results": "<work>/<model>/results",
+ "index": "<work>/<model>/index.jsonl",
+ "output_root": "<work>/<model>/common/results",
+ "checkpoint": "checkpoints/cotracker3/scaled_offline.pth",
+ "overrides": {
+  "min_pose_inlier_ratio": 0.1,
+  "min_pose_anchor_coverage": 0.1,
+  "translation_floor_cm": 0.0,
+  "rotation_floor_deg": 0.0
+ },
+ "description": "Common relaxed protocol for all models (pose inlier ratio and anchor coverage 0.1, motion-magnitude floor 0; k4/k12/k16 and the first-frame L1 gate of 32 unchanged)",
+ "audit_only": false,
+ "protocol_id": "common_pose010_motion0_k4_k12_k16_v1",
+ "rebuild_all_poses": false
+}

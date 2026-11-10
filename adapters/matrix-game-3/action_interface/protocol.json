@@ -1,0 +1,40 @@
+{
+  "schema_version": "strideworld-action-protocol-lite-v1",
+  "actions": [
+    "NO_OP",
+    "MOVE_FORWARD",
+    "MOVE_LEFT",
+    "MOVE_BACKWARD",
+    "MOVE_RIGHT",
+    "YAW_LEFT",
+    "YAW_RIGHT",
+    "PITCH_UP",
+    "PITCH_DOWN"
+  ],
+  "interface_tracks": [
+    "native_action",
+    "hybrid_action_pose",
+    "pose_conditioned",
+    "non_action"
+  ],
+  "allowed_doses": [0.5, 1.0, 2.0, 3.0],
+  "dose_definition": "dimensionless multiplier of each frozen adapter's base_control_ticks",
+  "rounding": "half_up",
+  "observation_tail_dose": 1.0,
+  "sequential_contract": {
+    "per_step_reference_frame": "current_camera_cv_rh_body",
+    "operator_application": "right_multiply_in_execution_order",
+    "unverified_multi_step_policy": "STRUCTURAL_NA"
+  },
+  "opposite_pairs": [
+    ["MOVE_FORWARD", "MOVE_BACKWARD"],
+    ["MOVE_LEFT", "MOVE_RIGHT"],
+    ["YAW_LEFT", "YAW_RIGHT"],
+    ["PITCH_UP", "PITCH_DOWN"]
+  ],
+  "task_rules": {
+    "TASK1": "world geometry preservation under a frozen canonical request",
+    "TASK2": "exactly one primitive per case for response calibration",
+    "TASK3": "at least two primitive occurrences for composition tests"
+  }
+}

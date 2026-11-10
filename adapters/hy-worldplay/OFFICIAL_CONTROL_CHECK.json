@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "method": "execute official parser and trajectory function AST unchanged",
+  "actions": [
+    {
+      "token": "w-1",
+      "translation_model_units": 0.08,
+      "yaw_degrees": 0.0,
+      "poses": 2
+    },
+    {
+      "token": "s-1",
+      "translation_model_units": 0.08,
+      "yaw_degrees": 0.0,
+      "poses": 2
+    },
+    {
+      "token": "a-1",
+      "translation_model_units": 0.08,
+      "yaw_degrees": 0.0,
+      "poses": 2
+    },
+    {
+      "token": "d-1",
+      "translation_model_units": 0.08,
+      "yaw_degrees": 0.0,
+      "poses": 2
+    },
+    {
+      "token": "left-1",
+      "translation_model_units": 0.0,
+      "yaw_degrees": -3.0000000000000004,
+      "poses": 2
+    },
+    {
+      "token": "right-1",
+      "translation_model_units": 0.0,
+      "yaw_degrees": 3.0000000000000004,
+      "poses": 2
+    }
+  ],
+  "native_ticks_per_benchmark_step": 1,
+  "ticks_per_keyboard_hold": "integer duration supplied by pose string; official demo does not impose one fixed value",
+  "rgb_intervals_per_tick": 4,
+  "fps": 24,
+  "r4_default": false,
+  "r5_default": false
+}

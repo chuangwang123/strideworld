@@ -1,0 +1,592 @@
+{
+ "benchmark": "StrideWorld",
+ "version": "v1.0",
+ "protocol": {
+  "start_views": 140,
+  "scenes": 30,
+  "rendered_scenes": 24,
+  "real_scenes": 6,
+  "requests_per_view": 26,
+  "videos_per_model": 3640,
+  "steps": 16,
+  "actions": [
+   "W",
+   "S",
+   "A",
+   "D",
+   "yaw-left",
+   "yaw-right"
+  ]
+ },
+ "columns": [
+  {
+   "key": "resp",
+   "label": "Resp.",
+   "group": "Response",
+   "unit": "%",
+   "higher_is_better": true,
+   "decimals": 1
+  },
+  {
+   "key": "offset",
+   "label": "Offset",
+   "group": "Rigidity",
+   "unit": "deg",
+   "higher_is_better": false,
+   "decimals": 2
+  },
+  {
+   "key": "ratio",
+   "label": "Ratio",
+   "group": "Pace",
+   "unit": "",
+   "higher_is_better": null,
+   "decimals": 2
+  },
+  {
+   "key": "pace",
+   "label": "Score",
+   "group": "Pace",
+   "unit": "",
+   "higher_is_better": true,
+   "decimals": 1
+  },
+  {
+   "key": "comp",
+   "label": "Score",
+   "group": "Composition",
+   "unit": "",
+   "higher_is_better": true,
+   "decimals": 1
+  },
+  {
+   "key": "near",
+   "label": "Near",
+   "group": "Composition",
+   "unit": "%",
+   "higher_is_better": true,
+   "decimals": 1
+  },
+  {
+   "key": "stall",
+   "label": "Stall",
+   "group": "Composition",
+   "unit": "%",
+   "higher_is_better": false,
+   "decimals": 1
+  },
+  {
+   "key": "enderr",
+   "label": "End err.",
+   "group": "Composition",
+   "unit": "strides",
+   "higher_is_better": false,
+   "decimals": 2
+  },
+  {
+   "key": "swap",
+   "label": "Swap gap",
+   "group": "Composition",
+   "unit": "strides",
+   "higher_is_better": false,
+   "decimals": 2
+  },
+  {
+   "key": "musiq",
+   "label": "MUSIQ",
+   "group": "Image quality",
+   "unit": "",
+   "higher_is_better": true,
+   "decimals": 1
+  }
+ ],
+ "notes": {
+  "resp": "Share of single-action videos in which the camera moves the commanded way (2 deg or 2% of the start view depth by step 16).",
+  "offset": "Median offset of held-out anchors from their rigid positions at 2-8 deg of image motion. Hover a value for the offset relative to a rigid counterpart of the start view along the same camera path (1 = rigid).",
+  "ratio": "Pace ratio: observed over predicted motion after 16 steps (1 = steady; 0.8-1.25 counts as steady).",
+  "pace": "Pace score: usable control of a held action (50 = off by one predicted path length).",
+  "comp": "Composition score: route and swap-pair scores (translation and yaw averaged); incomplete routes score 0.",
+  "near": "Routes ending within one stride of the prediction (%).",
+  "stall": "Routes with a stalled step (%).",
+  "enderr": "Median end error of completed routes (strides).",
+  "swap": "Median gap between the ends of a swap pair (strides).",
+  "musiq": "MUSIQ no-reference image quality (not part of the benchmark scores).",
+  "stride_near_noise": "Strides close to the measurement noise: stride-based values shown but not ranked."
+ },
+ "models": [
+  {
+   "key": "matrix-game-3",
+   "name": "Matrix-Game 3.0",
+   "interface": "Discrete keys",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 94.19642857142856,
+   "vs_rigid": 3.85,
+   "values": {
+    "resp": 99.6049,
+    "offset": 0.386,
+    "ratio": 0.9648,
+    "pace": 77.0763,
+    "comp": 59.3323,
+    "near": 42.5,
+    "stall": 0.7143,
+    "enderr": 0.6653,
+    "swap": 0.4115,
+    "musiq": 72.06
+   },
+   "rank": {
+    "resp": 3,
+    "offset": 14,
+    "pace": 7,
+    "comp": 4,
+    "near": 3,
+    "stall": 3,
+    "enderr": 3,
+    "swap": 3
+   }
+  },
+  {
+   "key": "matrix-game-2",
+   "name": "Matrix-Game 2.0",
+   "interface": "Discrete keys",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 90.625,
+   "vs_rigid": 3.3,
+   "values": {
+    "resp": 84.3333,
+    "offset": 0.4025,
+    "ratio": 0.9606,
+    "pace": 64.7868,
+    "comp": 49.6325,
+    "near": 24.7321,
+    "stall": 7.4107,
+    "enderr": 1.4503,
+    "swap": 1.1448,
+    "musiq": 68.48
+   },
+   "rank": {
+    "resp": 14,
+    "offset": 15,
+    "pace": 12,
+    "comp": 7,
+    "near": 5,
+    "stall": 7,
+    "enderr": 4,
+    "swap": 8
+   }
+  },
+  {
+   "key": "sana-wm",
+   "name": "SANA-WM",
+   "interface": "Discrete keys",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 62.410714285714285,
+   "vs_rigid": 2.15,
+   "values": {
+    "resp": 99.4136,
+    "offset": 0.2747,
+    "ratio": 1.0937,
+    "pace": 76.2352,
+    "comp": 28.3295,
+    "near": 7.2321,
+    "stall": 36.5179,
+    "enderr": 2.4693,
+    "swap": 1.946,
+    "musiq": 69.6
+   },
+   "rank": {
+    "resp": 6,
+    "offset": 4,
+    "pace": 8,
+    "comp": 10,
+    "near": 9,
+    "stall": 12,
+    "enderr": 10,
+    "swap": 11
+   }
+  },
+  {
+   "key": "dreamx-world",
+   "name": "DreamX-World",
+   "interface": "Discrete keys",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "changes_pace",
+   "completed": 87.67857142857143,
+   "vs_rigid": 3.4,
+   "values": {
+    "resp": 99.0463,
+    "offset": 0.3844,
+    "ratio": 2.1051,
+    "pace": 46.442,
+    "comp": 24.1743,
+    "near": 0.5357,
+    "stall": 12.3214,
+    "enderr": 5.2168,
+    "swap": 4.9247,
+    "musiq": 74.3
+   },
+   "rank": {
+    "resp": 10,
+    "offset": 13,
+    "pace": 13,
+    "comp": 11,
+    "near": 13,
+    "stall": 8,
+    "enderr": 13,
+    "swap": 14
+   }
+  },
+  {
+   "key": "hunyuan-world-1.5",
+   "name": "HY-World 1.5",
+   "interface": "Discrete keys",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 45.98214285714285,
+   "vs_rigid": 7.3,
+   "values": {
+    "resp": 99.642,
+    "offset": 0.3323,
+    "ratio": 0.9736,
+    "pace": 77.6888,
+    "comp": 21.8207,
+    "near": 3.75,
+    "stall": 54.0179,
+    "enderr": 2.4228,
+    "swap": 1.5618,
+    "musiq": 71.6
+   },
+   "rank": {
+    "resp": 2,
+    "offset": 7,
+    "pace": 6,
+    "comp": 13,
+    "near": 11,
+    "stall": 14,
+    "enderr": 9,
+    "swap": 9
+   }
+  },
+  {
+   "key": "hy-world-2",
+   "name": "HY-World 2.0",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 99.10714285714286,
+   "vs_rigid": 4.01,
+   "values": {
+    "resp": 99.287,
+    "offset": 0.3476,
+    "ratio": 1.0043,
+    "pace": 86.7937,
+    "comp": 83.1194,
+    "near": 84.2857,
+    "stall": 0.2679,
+    "enderr": 0.3046,
+    "swap": 0.1017,
+    "musiq": 72.9
+   },
+   "rank": {
+    "resp": 7,
+    "offset": 10,
+    "pace": 2,
+    "comp": 1,
+    "near": 1,
+    "stall": 2,
+    "enderr": 1,
+    "swap": 1
+   }
+  },
+  {
+   "key": "lyra2",
+   "name": "Lyra 2.0",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 99.01785714285715,
+   "vs_rigid": 1.58,
+   "values": {
+    "resp": 99.5185,
+    "offset": 0.1078,
+    "ratio": 1.0115,
+    "pace": 88.0915,
+    "comp": 78.0111,
+    "near": 75.8929,
+    "stall": 0.9821,
+    "enderr": 0.5139,
+    "swap": 0.3357,
+    "musiq": 75.5
+   },
+   "rank": {
+    "resp": 4,
+    "offset": 1,
+    "pace": 1,
+    "comp": 2,
+    "near": 2,
+    "stall": 4,
+    "enderr": 2,
+    "swap": 2
+   }
+  },
+  {
+   "key": "solarwm-h3",
+   "name": "SolarWM",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 97.58928571428572,
+   "vs_rigid": 1.6,
+   "values": {
+    "resp": 98.7901,
+    "offset": 0.1731,
+    "ratio": 0.9429,
+    "pace": 85.3755,
+    "comp": 66.0657,
+    "near": 25.3571,
+    "stall": 2.1429,
+    "enderr": 1.6096,
+    "swap": 0.7678,
+    "musiq": 73.0
+   },
+   "rank": {
+    "resp": 11,
+    "offset": 2,
+    "pace": 3,
+    "comp": 3,
+    "near": 4,
+    "stall": 6,
+    "enderr": 5,
+    "swap": 4
+   }
+  },
+  {
+   "key": "worldcrafter-fast",
+   "name": "WorldCrafter",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 97.94642857142856,
+   "vs_rigid": 2.34,
+   "values": {
+    "resp": 99.4321,
+    "offset": 0.3311,
+    "ratio": 1.0755,
+    "pace": 80.1593,
+    "comp": 56.8017,
+    "near": 15.9821,
+    "stall": 0.0893,
+    "enderr": 2.3827,
+    "swap": 0.8777,
+    "musiq": 66.1484
+   },
+   "rank": {
+    "resp": 5,
+    "offset": 6,
+    "pace": 5,
+    "comp": 5,
+    "near": 6,
+    "stall": 1,
+    "enderr": 8,
+    "swap": 6
+   }
+  },
+  {
+   "key": "lingbot-world-v2",
+   "name": "LingBot-World v2",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 93.03571428571428,
+   "vs_rigid": 2.45,
+   "values": {
+    "resp": 99.2438,
+    "offset": 0.3841,
+    "ratio": 0.9443,
+    "pace": 82.594,
+    "comp": 54.6426,
+    "near": 11.25,
+    "stall": 1.3393,
+    "enderr": 2.3157,
+    "swap": 0.7803,
+    "musiq": 72.2
+   },
+   "rank": {
+    "resp": 8,
+    "offset": 12,
+    "pace": 4,
+    "comp": 6,
+    "near": 7,
+    "stall": 5,
+    "enderr": 7,
+    "swap": 5
+   }
+  },
+  {
+   "key": "hy-worldplay",
+   "name": "HY-WorldPlay",
+   "interface": "Camera path",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 81.875,
+   "vs_rigid": 3.92,
+   "values": {
+    "resp": 99.7685,
+    "offset": 0.3838,
+    "ratio": 1.1052,
+    "pace": 74.8465,
+    "comp": 38.4076,
+    "near": 3.8393,
+    "stall": 17.1429,
+    "enderr": 3.4392,
+    "swap": 1.7096,
+    "musiq": 73.0434
+   },
+   "rank": {
+    "resp": 1,
+    "offset": 11,
+    "pace": 9,
+    "comp": 8,
+    "near": 10,
+    "stall": 9,
+    "enderr": 11,
+    "swap": 10
+   }
+  },
+  {
+   "key": "evoke-turbo",
+   "name": "EVOKE",
+   "interface": "Camera path",
+   "command": "release default",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 77.76785714285714,
+   "vs_rigid": 2.97,
+   "values": {
+    "resp": 99.1821,
+    "offset": 0.3398,
+    "ratio": 1.1151,
+    "pace": 73.8801,
+    "comp": 32.8699,
+    "near": 3.125,
+    "stall": 21.3393,
+    "enderr": 4.5666,
+    "swap": 2.5869,
+    "musiq": 69.6
+   },
+   "rank": {
+    "resp": 9,
+    "offset": 9,
+    "pace": 10,
+    "comp": 9,
+    "near": 12,
+    "stall": 10,
+    "enderr": 12,
+    "swap": 12
+   }
+  },
+  {
+   "key": "matrix-game-3.5",
+   "name": "Matrix-Game 3.5",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "steady",
+   "completed": 52.85714285714286,
+   "vs_rigid": 2.82,
+   "values": {
+    "resp": 85.6142,
+    "offset": 0.3354,
+    "ratio": 0.9459,
+    "pace": 65.62,
+    "comp": 22.2144,
+    "near": 8.0357,
+    "stall": 47.1429,
+    "enderr": 2.1286,
+    "swap": 1.1031,
+    "musiq": 72.3
+   },
+   "rank": {
+    "resp": 13,
+    "offset": 8,
+    "pace": 11,
+    "comp": 12,
+    "near": 8,
+    "stall": 13,
+    "enderr": 6,
+    "swap": 7
+   }
+  },
+  {
+   "key": "alaya-world",
+   "name": "AlayaWorld",
+   "interface": "Camera path",
+   "command": "benchmark magnitude",
+   "stride_near_noise": true,
+   "pace_flag": "not_assessed",
+   "completed": 47.85714285714286,
+   "vs_rigid": 3.01,
+   "values": {
+    "resp": 75.5278,
+    "offset": 0.2565,
+    "ratio": 4.1672,
+    "pace": 19.8014,
+    "comp": 10.9961,
+    "near": 0.4464,
+    "stall": 47.5,
+    "enderr": 50.5697,
+    "swap": 64.7644,
+    "musiq": 71.5
+   },
+   "rank": {
+    "resp": 15,
+    "offset": 3
+   }
+  },
+  {
+   "key": "h3-world",
+   "name": "H3-World",
+   "interface": "Text prompt",
+   "command": "benchmark magnitude",
+   "stride_near_noise": false,
+   "pace_flag": "outside_eq1_only",
+   "completed": 30.178571428571427,
+   "vs_rigid": 1.59,
+   "values": {
+    "resp": 91.8704,
+    "offset": 0.3197,
+    "ratio": 1.292,
+    "pace": 24.8725,
+    "comp": 7.5615,
+    "near": 0.1786,
+    "stall": 36.0714,
+    "enderr": 9.015,
+    "swap": 4.5175,
+    "musiq": 63.3
+   },
+   "rank": {
+    "resp": 12,
+    "offset": 5,
+    "pace": 14,
+    "comp": 14,
+    "near": 14,
+    "stall": 11,
+    "enderr": 14,
+    "swap": 13
+   }
+  }
+ ]
+}

@@ -1,0 +1,9 @@
+{
+ "model": "solarwm-h3",
+ "translation_per_unit": 0.2,
+ "yaw_degrees_per_unit": 2.5,
+ "transitions_per_unit": 8,
+ "fps": 24,
+ "per_video_second_translation": 0.6000000000000001,
+ "per_video_second_yaw_degrees": 7.5
+}

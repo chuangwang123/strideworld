@@ -1,0 +1,189 @@
+{
+  "adapter_id": "matrix_game_3_final_atomic_v3",
+  "model_id": "Matrix-Game 3.0 base-distilled",
+  "interface_track": "native_action",
+  "action_reference_frame": "start_camera_cv_rh_right_action",
+  "representation": "multi_hot",
+  "timing": {
+    "fps": 17,
+    "frames": 57,
+    "conditioning_frames": 1,
+    "native_tick_frames": 1,
+    "base_control_ticks": 4
+  },
+  "default_strength": {
+    "keyboard": 1.0,
+    "mouse_delta": 0.1
+  },
+  "measurable_atomic_unit": {
+    "schema_version": "strideworld-measurable-atomic-unit-v1",
+    "native_ticks": 4,
+    "legacy_base_control_ticks": 14,
+    "legacy_dose_equivalent": 0.2857142857142857,
+    "same_for_all_supported_actions": true,
+    "selection_status": "BENCHMARK_SMOKE_CANDIDATE_MANUAL_ACCEPTANCE_PENDING",
+    "selection_evidence": "pinned_upstream_pose_consumer_1.5deg_per_tick; d8_24_action_ticks_plus_3_tick_tail_within_one_57_frame_iteration"
+  },
+  "sequential": {
+    "supported": true,
+    "verified_runner": "scripts/run_matrix_game_3_sequential.py",
+    "verification_source": "cpu_compiled_native_request_plan_final_v9_l5_l8_l11_l14_v1_no_gpu_execution",
+    "max_steps": 23,
+    "switch_granularity": "native_tick_boundary",
+    "generation_extension_supported": true,
+    "generation_extension_verification_source": "scripts/run_matrix_game_3_sequential.py:native_output_plan_dynamic_horizon_to_l23_cpu_only_v1",
+    "per_step_reference_frame": "current_camera_cv_rh_body",
+    "initial_state_pose_policy": "required_if_conditioning_frames_zero"
+  },
+  "final_portable_contract": {
+    "schema_version": "strideworld-matrix-final-portable-contract-v1",
+    "case_manifest_schema": "strideworld-portable-case-v1",
+    "record_kind": "SHARED_TASK1_TASK3",
+    "route_lengths": [
+      5,
+      8,
+      11,
+      14
+    ],
+    "actions_per_step": 1,
+    "dose_per_step": 1.0,
+    "execution_evidence_status": "CPU_COMPILED_NATIVE_REQUEST_PLAN_ONLY",
+    "gpu_execution_validation_status": "NOT_RUN"
+  },
+  "simultaneous": {
+    "supported": true,
+    "merge_fields": [
+      "keyboard",
+      "mouse"
+    ]
+  },
+  "actions": {
+    "NO_OP": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.0
+      ]
+    },
+    "MOVE_FORWARD": {
+      "keyboard": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.0
+      ]
+    },
+    "MOVE_LEFT": {
+      "keyboard": [
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.0
+      ]
+    },
+    "MOVE_BACKWARD": {
+      "keyboard": [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.0
+      ]
+    },
+    "MOVE_RIGHT": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.0
+      ]
+    },
+    "YAW_LEFT": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        -0.04
+      ]
+    },
+    "YAW_RIGHT": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.0,
+        0.04
+      ]
+    },
+    "PITCH_UP": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        0.1,
+        0.0
+      ]
+    },
+    "PITCH_DOWN": {
+      "keyboard": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "mouse": [
+        -0.1,
+        0.0
+      ]
+    }
+  },
+  "unsupported_reasons": {}
+}

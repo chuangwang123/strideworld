@@ -1,0 +1,66 @@
+{
+  "section_title": "Examples",
+  "section_note": "Clips are re-timed so that every action step takes the same time; no frames are interpolated. The overlays show the benchmark's measurements of these videos. Blue: predicted from the reference. Red: generated.",
+  "tabs": [
+    {
+      "id": "rigidity",
+      "title": "Rigidity",
+      "caption": "Same start view, same route. Blue rings mark where the held-out anchors would be if the scene stayed rigid, given the camera recovered from the pose anchors. Red dots mark where the video shows them. In these two videos the median offset stays near 0.10° for Lyra 2.0 and reaches 0.42° for HY-World 2.0.",
+      "clips": [
+        {"file": "rigidity_lyra2.mp4", "poster": "rigidity_lyra2.jpg", "label": "Lyra 2.0", "model_key": "lyra2",
+         "alt": "Lyra 2.0 on a street scene. Red dots stay inside the blue rings of the held-out anchors.",
+         "view": "ue5_scene_22/case_04", "request": "route G3_072_A, seed 0", "record_id": "swr_bd935c0ff8eae66d5d7ba05d",
+         "numbers": {"median_frame_offset_deg": 0.0956}},
+        {"file": "rigidity_hyworld2.mp4", "poster": "rigidity_hyworld2.jpg", "label": "HY-World 2.0", "model_key": "hy-world-2",
+         "alt": "HY-World 2.0 on the same street scene. Red dots drift away from the blue rings as the camera moves.",
+         "view": "ue5_scene_22/case_04", "request": "route G3_072_A, seed 0", "record_id": "swr_d997a28c5b1da6a40b1fd60a",
+         "numbers": {"median_frame_offset_deg": 0.4215}}
+      ]
+    },
+    {
+      "id": "pace",
+      "title": "Pace",
+      "caption": "Each model holds one action for 16 steps. The blue marker advances by the stride measured on the first four steps, and the red marker shows the distance the camera has covered. Lyra 2.0 arrives where its first steps predict, with a ratio of 1.01. DreamX-World speeds up and covers 2.15 times the predicted distance.",
+      "clips": [
+        {"file": "pace_lyra2.mp4", "poster": "pace_lyra2.jpg", "label": "Lyra 2.0", "model_key": "lyra2",
+         "alt": "Lyra 2.0 holds the backward key for 16 steps. The observed marker ends at the predicted 16 strides.",
+         "view": "ue5_scene_24/case_01", "request": "single action S, seed 0", "record_id": "swr_6e6d4bdaf2d93469c26db3c5",
+         "numbers": {"pace_ratio_video": 1.0091}},
+        {"file": "pace_dreamx.mp4", "poster": "pace_dreamx.jpg", "label": "DreamX-World", "model_key": "dreamx-world",
+         "alt": "DreamX-World holds the forward key for 16 steps. The observed marker runs ahead and ends near 34 strides.",
+         "view": "ue5_scene_14/case_03", "request": "single action W, seed 1", "record_id": "sw10__ue5_scene_14__case_03__seed1__atomic_W",
+         "numbers": {"pace_ratio_video": 2.1467}}
+      ]
+    },
+    {
+      "id": "composition",
+      "title": "Composition",
+      "caption": "Same start view, same eight commands. The blue path chains the strides each model showed on single actions and ends at the blue ring. The red path is the generated camera path. HY-World 2.0 ends 1.0 stride from its predicted end, and H3-World ends 9.5 strides from it.",
+      "clips": [
+        {"file": "composition_hyworld2.mp4", "poster": "composition_hyworld2.jpg", "label": "HY-World 2.0", "model_key": "hy-world-2",
+         "alt": "HY-World 2.0 on an island scene. The generated path ends next to the predicted end.",
+         "view": "ue5_scene_17/case_05", "request": "route G2_083_A, seed 0", "record_id": "swr_ed0006caf2e74e2a0c1df4e4",
+         "numbers": {"end_error_strides": 0.9944}},
+        {"file": "composition_h3world.mp4", "poster": "composition_h3world.jpg", "label": "H3-World", "model_key": "h3-world",
+         "alt": "H3-World on the same island scene. The generated path drifts to the right and ends far from the predicted end.",
+         "view": "ue5_scene_17/case_05", "request": "route G2_083_A, seed 0", "record_id": "h3_35062d6e7b0c9e89adec0266",
+         "numbers": {"end_error_strides": 9.5486}}
+      ]
+    },
+    {
+      "id": "finetuning",
+      "title": "Fine-tuning",
+      "caption": "HY-World 1.5 on the same route before and after fine-tuning on rendered clips with exact camera paths. The base model does not move on the second step, so the route is not completed. The fine-tuned model completes the route and ends 2.0 strides from its predicted end.",
+      "clips": [
+        {"file": "finetune_base.mp4", "poster": "finetune_base.jpg", "label": "HY-World 1.5 · base", "model_key": "hunyuan-world-1.5",
+         "alt": "The base model in an attic room. The second step is marked red because the camera does not move.",
+         "view": "ue5_scene_10/case_02", "request": "route G2_004_A, seed 0", "record_id": "swr_89452afa0c0bf9abd6eff815", "run": "measurements/finetune/n0",
+         "numbers": {"stalled_step": 2}},
+        {"file": "finetune_tuned.mp4", "poster": "finetune_tuned.jpg", "label": "HY-World 1.5 · fine-tuned", "model_key": "hunyuan-world-1.5",
+         "alt": "The fine-tuned model in the same room. The generated path follows the shape of the predicted path.",
+         "view": "ue5_scene_10/case_02", "request": "route G2_004_A, seed 0", "record_id": "swr_89452afa0c0bf9abd6eff815", "run": "measurements/finetune/b2",
+         "numbers": {"end_error_strides": 1.9851}}
+      ]
+    }
+  ]
+}

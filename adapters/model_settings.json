@@ -1,0 +1,342 @@
+{
+ "schema": "strideworld-model-settings-v1",
+ "protocol": {
+  "condition": "the start image and the fixed prompt of the model only; no later frame of any kind",
+  "actions": "the action units of the request, in order, each in the current camera frame (x right, y down, z forward)",
+  "seed": "the seed of the request, set again for every video",
+  "one_call_per_video": "single-action and route videos use the same settings; a route is generated in one rollout",
+  "scored_frames": "frames up to the end of the last action unit; frames a model generates after it are not scored"
+ },
+ "models": {
+  "matrix-game-3": {
+   "name": "Matrix-Game 3.0",
+   "interface": "keyboard and mouse",
+   "upstream": "SkyworkAI/Matrix-Game (Matrix-Game-3)",
+   "upstream_commit": "71c3cd7f741311f8100f6cf9cde942b6c1378d11",
+   "weights": "Skywork/Matrix-Game-3.0 @ 382aa382a03cec057360755aa72c7735025770bb (base-distilled)",
+   "frames_per_action_unit": 4,
+   "fps": 17,
+   "resolution": "1280x704",
+   "command_per_action_unit": {
+    "translation": "W/S/A/D key held, release default",
+    "yaw": "mouse delta 0.04 per frame on the yaw axis (release default 0.1)"
+   },
+   "sampler": "3 steps",
+   "start_image_preprocessing": "center crop, then resize",
+   "adapter_files": [
+    "matrix-game-3/matrix_game_3.json",
+    "matrix-game-3/run_matrix_game_3_sequential.py",
+    "matrix-game-3/action_interface/"
+   ]
+  },
+  "matrix-game-2": {
+   "name": "Matrix-Game 2.0",
+   "interface": "keyboard and mouse",
+   "upstream": "SkyworkAI/Matrix-Game (Matrix-Game-2)",
+   "upstream_commit": "71c3cd7f741311f8100f6cf9cde942b6c1378d11",
+   "weights": "Skywork/Matrix-Game-2.0 @ f1729d99a80e0f07993a77d7dad4a3190e23c2c8 (base-distilled)",
+   "frames_per_action_unit": 4,
+   "fps": 16,
+   "resolution": "640x352",
+   "command_per_action_unit": {
+    "translation": "W/S/A/D key held, release default",
+    "yaw": "mouse delta 0.035 per frame on the yaw axis (release default 0.1)"
+   },
+   "sampler": "release default of the distilled checkpoint",
+   "start_image_preprocessing": "center crop, then resize",
+   "adapter_files": [
+    "matrix-game-2/matrix_game_2.json",
+    "matrix-game-2/run_matrix_game_2_sequential.py",
+    "matrix-game-2/action_interface/"
+   ]
+  },
+  "sana-wm": {
+   "name": "SANA-WM",
+   "interface": "native action sequence (w/s/a/d/j/l tokens)",
+   "upstream": "NVlabs/Sana (configs/sana_wm/sana_wm_streaming_1600m_720p.yaml)",
+   "upstream_commit": "6c3aeea94945692a902df8db25327eba040b5d91",
+   "weights": "dit/sana_wm_1600m_720p.safetensors @ c7694938c854b1fcc29468e9514f1ea2d0c4ba8e",
+   "frames_per_action_unit": 4,
+   "fps": 16,
+   "resolution": "1280x704",
+   "command_per_action_unit": {
+    "translation": "release default strength, 0.025 per frame",
+    "yaw": "release default strength, 0.6 degrees per frame"
+   },
+   "sampler": "4 steps, CFG 1.0, flow shift 8.0",
+   "start_image_preprocessing": "resize and center crop",
+   "adapter_files": [
+    "sana-wm/sana_wm.json",
+    "sana-wm/sana_wm_native.py",
+    "sana-wm/run_sana_wm_streaming_persistent_worker.py"
+   ]
+  },
+  "dreamx-world": {
+   "name": "DreamX-World",
+   "interface": "action tokens",
+   "upstream": "DreamX-World official code",
+   "upstream_commit": "a1f4c6e5e45600718e5236955f2e0702e53fc275",
+   "weights": "GD-ML/DreamX-World-5B @ 67487c4a61466bb7166d30b7187dd465e0ac9f6c",
+   "frames_per_action_unit": 4,
+   "fps": 16,
+   "resolution": "1280x704",
+   "command_per_action_unit": {
+    "translation": "0.075 per frame interval",
+    "yaw": "1.5 degrees per frame interval"
+   },
+   "sampler": "release default, guidance scale 3.0",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "dreamx-world/run_dreamx_world_d16.py",
+    "dreamx-world/run_dreamx_world_routes.py",
+    "dreamx-world/camera_geometry.py",
+    "dreamx-world/inference_ar_forcing_per_item_seed.patch"
+   ]
+  },
+  "hunyuan-world-1.5": {
+   "name": "HY-World 1.5",
+   "interface": "official pose string (w/s/a/d/left/right tokens)",
+   "upstream": "Tencent-Hunyuan/HY-WorldPlay",
+   "upstream_commit": "1588e1336e842b03b0a7860c654ebd7c46bb065e",
+   "weights": "tencent/HY-WorldPlay @ f4c29235647707b571479a69b569e4166f9f5bf8, ar_distilled_action_model (HY-World1.5-AR-480P-I2V-distill)",
+   "frames_per_action_unit": 4,
+   "fps": 24,
+   "resolution": "832x480",
+   "command_per_action_unit": {
+    "translation": "0.08 per action unit (one official tick)",
+    "yaw": "3 degrees per action unit"
+   },
+   "sampler": "4 steps (distilled)",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "hunyuan-world-1.5/hunyuan_world15_worker.py",
+    "hunyuan-world-1.5/hunyuan_world15_adapter.json"
+   ]
+  },
+  "hy-world-2": {
+   "name": "HY-World 2.0",
+   "interface": "camera pose",
+   "upstream": "HY-World-2.0 official code (WorldStereo), with upstream_local_changes.patch",
+   "upstream_commit": "df9988efb87bfc0f4947eb3889411cf957478b06",
+   "weights": "worldstereo-camera checkpoint @ ac2ad97ecb043fe80c2f19cd1898006becb9d66e",
+   "frames_per_action_unit": 2,
+   "fps": 16,
+   "resolution": "832x480",
+   "command_per_action_unit": {
+    "translation": "0.025 per action unit, in units of the median depth of the start view",
+    "yaw": "3 degrees per action unit"
+   },
+   "sampler": "40 steps, guidance scale 5.0",
+   "start_image_preprocessing": "bicubic resize to 832x480",
+   "adapter_files": [
+    "hy-world-2/hyworld2_worker.py",
+    "hy-world-2/hyworld2_camera_controls.py",
+    "hy-world-2/hyworld2_rgbd_render.py",
+    "hy-world-2/hyworld2_profile.json",
+    "hy-world-2/upstream_local_changes.patch"
+   ]
+  },
+  "lyra2": {
+   "name": "Lyra 2.0",
+   "interface": "camera pose",
+   "upstream": "Lyra 2 official code",
+   "upstream_commit": null,
+   "weights": "Lyra2.0-14B-480p-I2V-DMD",
+   "frames_per_action_unit": 10,
+   "fps": 16,
+   "resolution": "832x480",
+   "command_per_action_unit": {
+    "translation": "0.1 per action unit",
+    "yaw": "2 degrees per action unit"
+   },
+   "sampler": "DMD sampler, 4 steps, pose scale 1.0",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "lyra2/prepare_lyra2_adapter.py",
+    "lyra2/build_camera_profile.py",
+    "lyra2/run_lyra2.py",
+    "lyra2/lyra2_persistent_batch.py",
+    "lyra2/run_lyra2_persistent.sh"
+   ]
+  },
+  "solarwm-h3": {
+   "name": "SolarWM",
+   "interface": "camera pose",
+   "upstream": "SolarWM official code",
+   "upstream_commit": "552cea30c8b1406c1f2c36c37dc233588d623306",
+   "weights": "junchaoh-cs/SolarWM-H3-33B @ 711d516329b9eaa395888c6ca724e0567bd3bdcb, stage-2 EMA checkpoint (step 3900)",
+   "frames_per_action_unit": 8,
+   "fps": 24,
+   "resolution": "1344x768",
+   "command_per_action_unit": {
+    "translation": "0.2 per action unit",
+    "yaw": "2.5 degrees per action unit"
+   },
+   "sampler": "4 steps",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "common/build_model_inputs.py (solar_case)",
+    "common/model_profiles.json",
+    "solarwm-h3/CONTROL_PROFILE.json",
+    "solarwm-h3/infer_config.json"
+   ]
+  },
+  "worldcrafter-fast": {
+   "name": "WorldCrafter",
+   "interface": "camera pose",
+   "upstream": "WorldCrafter official code",
+   "upstream_commit": "11712fe3a3f42cc448c10713a0b0ff79066e5935",
+   "weights": "TencentARC/WorldCrafter-Fast @ 51320c3eb58a6313ccd6021a1da6d723d53e1a58",
+   "frames_per_action_unit": 16,
+   "fps": 16,
+   "resolution": "640x384",
+   "command_per_action_unit": {
+    "translation": "16/33 per action unit",
+    "yaw": "4 degrees per action unit"
+   },
+   "sampler": "6 steps, guidance scale 1.0",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "worldcrafter-fast/worldcrafter_schedule.py"
+   ]
+  },
+  "lingbot-world-v2": {
+   "name": "LingBot-World v2",
+   "interface": "camera pose",
+   "upstream": "LingBot-World v2 official code",
+   "upstream_commit": "2648877f763a06cc743bcd919936da4d25f12e7b",
+   "weights": "robbyant/lingbot-world-v2-14b-causal-fast @ 5c33dd40b213598c418fd25bff30fdbd23fd38a7",
+   "frames_per_action_unit": 4,
+   "fps": 16,
+   "resolution": "832x464 (16:9 views), 768x512 (3:2 views)",
+   "command_per_action_unit": {
+    "translation": "0.025 per frame interval, before the official per-video normalisation of the path",
+    "yaw": "0.75 degrees per frame interval"
+   },
+   "sampler": "causal_fast mode, release default",
+   "start_image_preprocessing": "official resize to the 480p pixel area, sides rounded down to multiples of 16",
+   "adapter_files": [
+    "lingbot-world-v2/lingbot_world_v2_worker.py",
+    "lingbot-world-v2/lingbot_world_v2_adapter.json"
+   ]
+  },
+  "hy-worldplay": {
+   "name": "HY-WorldPlay",
+   "interface": "official pose string (pose tokens)",
+   "upstream": "Tencent-Hunyuan/HY-WorldPlay",
+   "upstream_commit": "1588e1336e842b03b0a7860c654ebd7c46bb065e",
+   "weights": "tencent/HY-WorldPlay @ f4c29235647707b571479a69b569e4166f9f5bf8, ar_rl_model (HY-World1.5-AR-RL-480P-I2V)",
+   "frames_per_action_unit": 4,
+   "fps": 24,
+   "resolution": "832x480",
+   "command_per_action_unit": {
+    "translation": "0.08 per action unit (one official tick)",
+    "yaw": "3 degrees per action unit"
+   },
+   "sampler": "40 steps",
+   "start_image_preprocessing": "inside the official inference code",
+   "adapter_files": [
+    "hy-worldplay/worldplay_ar_rl_base_worker.py",
+    "hy-worldplay/worldplay_ar_rl_adapter_source.json",
+    "hy-worldplay/OFFICIAL_CONTROL_CHECK.json"
+   ]
+  },
+  "evoke-turbo": {
+   "name": "EVOKE",
+   "interface": "camera pose",
+   "upstream": "Evoke official code",
+   "upstream_commit": "1d271be45128bbda4263e9e3c7dfc8f6ba260492",
+   "weights": "AlayaLab/Evoke-Turbo @ fe5afb975e08bff47f5b23087e8f6f90316aee4d",
+   "frames_per_action_unit": 8,
+   "fps": 24,
+   "resolution": "640x384",
+   "command_per_action_unit": {
+    "translation": "1/6 per action unit",
+    "yaw": "5 degrees per action unit"
+   },
+   "sampler": "3 steps, guidance scale 1",
+   "start_image_preprocessing": "direct resize to 640x384, intrinsics scaled with it",
+   "adapter_files": [
+    "evoke-turbo/build_evoke_full_inputs.py",
+    "common/build_model_inputs.py",
+    "common/model_profiles.json",
+    "evoke-turbo/evoke_full.py",
+    "evoke-turbo/argv_sample.jsonl"
+   ]
+  },
+  "matrix-game-3.5": {
+   "name": "Matrix-Game 3.5",
+   "interface": "camera pose",
+   "upstream": "Matrix-Game-3.5 official code",
+   "upstream_commit": "fbf7def0693ae14f745ba35bf2a26215d4ef991d",
+   "weights": "RiemannDynamics/Matrix-Game-3.5-Distilled @ 0b38ca0b0dda2bb994c570e183ad36d1acd53be2, first-person.safetensors",
+   "frames_per_action_unit": 8,
+   "fps": 16,
+   "resolution": "1280x704",
+   "command_per_action_unit": {
+    "translation": "0.1 per action unit",
+    "yaw": "0.6 degrees per action unit"
+   },
+   "sampler": "3 steps (1000, 667, 333), student CFG scale 3.0",
+   "start_image_preprocessing": "resize to cover 1280x704, then center crop",
+   "adapter_files": [
+    "common/build_model_inputs.py (matrix_case, --matrix-anchor-mode cover-resize-center-crop)",
+    "matrix-game-3.5/model_profile.json",
+    "matrix-game-3.5/matrix_persistent_worker.py",
+    "matrix-game-3.5/run_matrix_2gpu.py",
+    "matrix-game-3.5/infer_distilled_1blocks_seed1.yaml",
+    "matrix-game-3.5/infer_distilled_2blocks_seed1.yaml"
+   ]
+  },
+  "alaya-world": {
+   "name": "AlayaWorld",
+   "interface": "camera pose",
+   "upstream": "AlayaLab/AlayaWorld",
+   "upstream_commit": "ea03cfbb2e4c4e9102ed8ea8562e0b5370ca9b79",
+   "weights": "official merged inference checkpoint",
+   "frames_per_action_unit": 8,
+   "fps": 24,
+   "resolution": "960x544",
+   "command_per_action_unit": {
+    "translation": "forward/backward 1.27, lateral 0.0846 per action unit",
+    "yaw": "2 degrees per action unit"
+   },
+   "sampler": "4 steps, CFG scale 1.0",
+   "start_image_preprocessing": "resize to cover 960x544, then center crop",
+   "adapter_files": [
+    "alaya-world/common.py",
+    "alaya-world/build_inputs.py",
+    "alaya-world/build_full.py",
+    "alaya-world/official_runner.py",
+    "alaya-world/run_full_worker.py",
+    "alaya-world/official_config.yaml"
+   ]
+  },
+  "h3-world": {
+   "name": "H3-World",
+   "interface": "text (one fixed camera-motion sentence per action)",
+   "upstream": "H3-World official code with DiffSynth",
+   "upstream_commit": "e46d64f1e62a1514ccdb797d4014ed04ab9735cc (DiffSynth 300e3e4da76e881d5e6bd97d897810c18f6e4893)",
+   "weights": "H3-World step-10000 on MiniMaxAI/MiniMax-H3",
+   "frames_per_action_unit": 17,
+   "fps": 24,
+   "resolution": "832x480",
+   "command_per_action_unit": {
+    "NOOP": "the environment is stationary, camera holds steady",
+    "MOVE_FORWARD": "the environment is stationary, camera moves forward",
+    "MOVE_BACKWARD": "the environment is stationary, camera moves backward",
+    "MOVE_LEFT": "the environment is stationary, camera moves left",
+    "MOVE_RIGHT": "the environment is stationary, camera moves right",
+    "YAW_LEFT": "the environment is stationary, camera pans left slowly",
+    "YAW_RIGHT": "the environment is stationary, camera pans right slowly"
+   },
+   "sampler": "50 steps, CFG scale 1.0",
+   "start_image_preprocessing": "resize to cover 832x480 (Lanczos), then center crop",
+   "adapter_files": [
+    "h3-world/h3_controls.py",
+    "h3-world/worker.py",
+    "h3-world/padding_plan.py"
+   ]
+  }
+ }
+}

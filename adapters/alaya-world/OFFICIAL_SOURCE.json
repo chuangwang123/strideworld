@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/AlayaLab/AlayaWorld",
+  "commit": "ea03cfbb2e4c4e9102ed8ea8562e0b5370ca9b79",
+  "archive_sha256": "ac38788b091d1c18f4dfc038dd77a9ef85defcc34fec05b199639c2fb586e2fe",
+  "runtime_source": "<path>/AlayaWorld-ea03cfbb2e4c4e9102ed8ea8562e0b5370ca9b79",
+  "source_unmodified": true,
+  "config_overrides": [
+    "paths",
+    "validation.save_joystick"
+  ],
+  "model": "<path>/merged_infer.safetensors",
+  "model_bytes": 33609234116
+}

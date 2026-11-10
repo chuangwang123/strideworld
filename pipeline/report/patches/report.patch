@@ -1,0 +1,24 @@
+diff -ruN a/metrics/task3/task3_metrics.py b/metrics/task3/task3_metrics.py
+--- a/metrics/task3/task3_metrics.py
++++ b/metrics/task3/task3_metrics.py
+@@ -469,7 +469,7 @@
+              f"- Number of route pairs: {document.get('n_pairs', 0)}",
+              "- Current trajectory classification: G1 is inverse (different action multisets); G2/G3/G4 are order (same action multiset, different execution order).", "",
+              "## Computation", "",
+-             f"Each route reads the observed SE(2) at the initial frame and at every unit-action boundary; every boundary must satisfy `M_t` (valid camera, `pose_inlier_ratio>={document.get('run_profile', {}).get('min_pose_inlier_ratio', DEFAULT_MIN_POSE_INLIER_RATIO)}`, `pose_anchor_coverage>={document.get('run_profile', {}).get('min_pose_anchor_coverage', DEFAULT_MIN_POSE_ANCHOR_COVERAGE)}`). The predicted trajectory uses the short-range atomic operators of the same model/scene/case/seed, estimated from Task 2 checkpoints k=1..4, right-multiplied in execution order; the complex route itself is not truncated to 4 steps. The relation error is the translation and yaw distance between `Delta_obs = Pa_obs^-1 Pb_obs` and `Delta_pred = Pa_pred^-1 Pb_pred`; the self error compares the observed and predicted endpoints of each side. The normalized distance is `sqrt((D_t/u_t)^2+(D_r/u_r)^2)` and the score is `exp(-d_n)`; this report evaluates the pass rate at `tau=0.5`. Each unit action must also translate at least 1 cm or rotate at least 0.25 deg; otherwise it is marked `STATIC_SHORTCUT`.", "",
++             f"Each route reads the observed SE(2) at the initial frame and at every unit-action boundary; every boundary must satisfy `M_t` (valid camera, `pose_inlier_ratio>={document.get('run_profile', {}).get('min_pose_inlier_ratio', DEFAULT_MIN_POSE_INLIER_RATIO)}`, `pose_anchor_coverage>={document.get('run_profile', {}).get('min_pose_anchor_coverage', DEFAULT_MIN_POSE_ANCHOR_COVERAGE)}`). The predicted trajectory uses the short-range atomic operators of the same model/scene/case/seed, estimated from Task 2 checkpoints k=1..4, right-multiplied in execution order; the complex route itself is not truncated to 4 steps. The relation error is the translation and yaw distance between `Delta_obs = Pa_obs^-1 Pb_obs` and `Delta_pred = Pa_pred^-1 Pb_pred`; the self error compares the observed and predicted endpoints of each side. The normalized distance is `sqrt((D_t/u_t)^2+(D_r/u_r)^2)` and the score is `exp(-d_n)`; this report evaluates the pass rate at `tau=0.5`. Each unit action must also translate at least {document.get('spec', {}).get('translation_floor_cm', TRANSLATION_FLOOR_CM):g} cm or rotate at least {document.get('spec', {}).get('rotation_floor_deg', ROTATION_FLOOR_DEG):g} deg; otherwise it is marked `STATIC_SHORTCUT`.", "",
+              "## Results by Model and Relation Family", "", "|Model|Relation family|Pairs|Raw measurable|Normalized measurable|Interface coverage|Measurability coverage|Normalization coverage|E2E pass rate|Relation d_n median|Relation score median|self d_n median|", "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+     for key, summary in document.get("model_relation_summary", {}).items():
+         model, family = key.split("|", 1); rel = summary.get("relation", {}); self_d = summary.get("self_mean_d_n_median")
+diff -ruN a/metrics/tools/constants.py b/metrics/tools/constants.py
+--- a/metrics/tools/constants.py
++++ b/metrics/tools/constants.py
+@@ -17,7 +17,7 @@
+     "min_track_confidence": 0.5,
+     "tracker_visibility_threshold": 0.9,
+     "translation_floor_cm": 1.0,
+-    "rotation_floor_deg": 0.25,
++    "rotation_floor_deg": 0.05,
+     "depth_bins": 3,
+     "dose_max": 16,
+     "checkpoint_doses": tuple(range(1, 17)),

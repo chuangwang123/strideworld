@@ -1,0 +1,103 @@
+{
+  "schema_version": "strideworld-action-protocol-atomic-v3",
+  "actions": [
+    "NO_OP",
+    "MOVE_FORWARD",
+    "MOVE_LEFT",
+    "MOVE_BACKWARD",
+    "MOVE_RIGHT",
+    "YAW_LEFT",
+    "YAW_RIGHT",
+    "PITCH_UP",
+    "PITCH_DOWN"
+  ],
+  "interface_tracks": [
+    "native_action",
+    "hybrid_action_pose",
+    "pose_conditioned",
+    "non_action"
+  ],
+  "allowed_doses": [
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    8.0,
+    16.0
+  ],
+  "generation_extension_evidence_required": true,
+  "task2_checkpoint_contract": {
+    "explicit_checkpoint_doses_required": true,
+    "video_dose": 16.0,
+    "checkpoint_doses": [
+      1.0,
+      2.0,
+      3.0,
+      5.0,
+      8.0,
+      16.0
+    ]
+  },
+  "dose_definition": "integer multiplier of each frozen adapter's calibrated measurable atomic control block",
+  "atomic_unit_contract": {
+    "schema_version": "strideworld-measurable-atomic-unit-v1",
+    "definition": "smallest frozen integer-native-tick block selected before benchmark testing that remains evaluator-resolvable while preserving the visible-anchor budget across the main response curve",
+    "raw_native_ticks_required": true,
+    "fractional_formal_dose_forbidden": true,
+    "same_unit_for_all_supported_actions_within_adapter": true,
+    "left_right_pair_must_share_unit": true,
+    "wasd_family_must_share_unit": true,
+    "selection_split": "calibration_only_disjoint_from_formal_test_scenes",
+    "test_time_retuning_forbidden": true,
+    "report_fields": [
+      "native_ticks",
+      "native_tick_frames",
+      "duration_seconds_realized",
+      "legacy_base_control_ticks",
+      "legacy_dose_equivalent"
+    ]
+  },
+  "rounding": "half_up",
+  "observation_tail_dose": 1.0,
+  "sequential_contract": {
+    "per_step_reference_frame": "current_camera_cv_rh_body",
+    "operator_application": "right_multiply_in_execution_order",
+    "unverified_multi_step_policy": "STRUCTURAL_NA"
+  },
+  "opposite_pairs": [
+    [
+      "MOVE_FORWARD",
+      "MOVE_BACKWARD"
+    ],
+    [
+      "MOVE_LEFT",
+      "MOVE_RIGHT"
+    ],
+    [
+      "YAW_LEFT",
+      "YAW_RIGHT"
+    ],
+    [
+      "PITCH_UP",
+      "PITCH_DOWN"
+    ]
+  ],
+  "task_rules": {
+    "TASK1": "world geometry preservation under an independently generated frozen atomic or homogeneous held-action request",
+    "TASK2": "one homogeneous sixteen-atom rollout with frozen 1/2/3/5/8/16 measurement checkpoints",
+    "TASK3": "at least two frozen measurable atomic occurrences with a verified native action switch"
+  },
+  "d16_extension": {
+    "schema_version": "strideworld-held-d16-extension-v1",
+    "held_dose": 16.0,
+    "checkpoint_doses": [
+      1.0,
+      2.0,
+      3.0,
+      5.0,
+      8.0,
+      16.0
+    ],
+    "validation_status": "STATIC_CONTRACT_VALIDATED_GPU_NOT_RUN"
+  }
+}

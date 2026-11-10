@@ -1,0 +1,174 @@
+{
+  "schema_version": "strideworld-v10-native-adapter-v1",
+  "adapter_id": "lingbot_world_v2_causal_fast_v10_d16_v1",
+  "model_id": "lingbot_world_v2",
+  "display_name": "LingBot-World 2.0",
+  "model_variant": "LingBot-World-v2-14b-causal-fast",
+  "variant_status": "OFFICIAL_V2_CAUSAL_FAST",
+  "interface_track": "pose_conditioned",
+  "representation": "camera_trajectory",
+  "action_reference_frame": "current_camera_cv_rh_body",
+  "seed_policy": {
+    "seeds": [0, 1, 2],
+    "reset_for_every_independent_video": true
+  },
+  "timing": {
+    "fps": 16,
+    "conditioning_frames": 1,
+    "decoded_intervals_per_unit": 4,
+    "atomic_held_dose": 16,
+    "atomic_action_intervals": 64,
+    "atomic_output_frames": 65,
+    "atomic_native_output_frames": 69,
+    "checkpoint_doses": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "checkpoint_frame_indices": [
+      4,
+      8,
+      12,
+      16,
+      20,
+      24,
+      28,
+      32,
+      36,
+      40,
+      44,
+      48,
+      52,
+      56,
+      60,
+      64
+    ],
+    "complex_exact_lengths": [
+      8,
+      11,
+      14
+    ],
+    "complex_output_frames": {
+      "8": 33,
+      "11": 45,
+      "14": 57
+    },
+    "terminal_noop_frames": 0,
+    "unscored_padding_frames": {"atomic_D16": 4, "combination": 0}
+  },
+  "native_control": {
+    "infer_mode": "causal_fast",
+    "chunk_size_latents": 3,
+    "local_attention_size_latents": 18,
+    "sink_size_latents": 6,
+    "decoded_translation_per_interval": 0.025,
+    "decoded_yaw_degrees_per_interval": 0.75,
+    "yaw_profile": "0.75x_baseline_symmetric_left_right",
+    "translation_normalization": "official_compute_relative_poses_max_norm_per_video",
+    "cross_model_metric_unit_claim": false,
+    "single_native_generation_call": true,
+    "external_rgb_chaining": false
+  },
+  "intrinsics": {
+    "policy": "frozen_official_v2_model_control_profile",
+    "fx_fy_cx_cy": [
+      415.5298,
+      415.6922,
+      415.77786,
+      239.77779
+    ],
+    "source_evidence": "official_lingbot_world_v2_commit_2648877_examples_03_intrinsics_first_row",
+    "source_image_size": [
+      832,
+      480
+    ],
+    "native_control_size": [
+      832,
+      480
+    ],
+    "decoded_video_size": [
+      832,
+      464
+    ],
+    "decoded_video_size_semantics": "nominal_16_9_reference_only",
+    "decoded_video_size_policy": "official_max_area_aspect_vae8_patch2_floor16",
+    "camera_intrinsics_required_for_generation": true,
+    "absolute_c2w_required_for_generation": false,
+    "depth_required_for_generation": false,
+    "evaluation_gt_claim": false
+  },
+  "actions": {
+    "MOVE_FORWARD": {
+      "translation_body_xyz_sign": [
+        0,
+        0,
+        1
+      ]
+    },
+    "MOVE_BACKWARD": {
+      "translation_body_xyz_sign": [
+        0,
+        0,
+        -1
+      ]
+    },
+    "MOVE_LEFT": {
+      "translation_body_xyz_sign": [
+        -1,
+        0,
+        0
+      ]
+    },
+    "MOVE_RIGHT": {
+      "translation_body_xyz_sign": [
+        1,
+        0,
+        0
+      ]
+    },
+    "YAW_LEFT": {
+      "yaw_sign": -1
+    },
+    "YAW_RIGHT": {
+      "yaw_sign": 1
+    }
+  },
+  "capability": {
+    "task2_atomic": "READY_AFTER_YAW075_GPU_SMOKE",
+    "task1_task3_shared_complex": "READY_AFTER_YAW075_V9_L5_L8_L11_L14_GPU_SMOKE",
+    "supported_complex_exact_lengths": [
+      8,
+      11,
+      14
+    ],
+    "simultaneous_actions": false
+  },
+  "evidence": {
+    "official_source_commit": "2648877f763a06cc743bcd919936da4d25f12e7b",
+    "runtime_contract": "scripts/run_lingbot_v2_strideworld_compiled.py",
+    "checkpoint_repository": "robbyant/lingbot-world-v2-14b-causal-fast",
+    "checkpoint_revision": "5c33dd40b213598c418fd25bff30fdbd23fd38a7",
+    "accepted_gpu_smoke_scope": "legacy v9 only; no v10 smoke requested",
+    "accepted_gpu_smoke_job": "sw-lbv2-final-smoke-yaw075-a001",
+    "accepted_gpu_smoke_video_set_sha256": "94fd50d0c4638e5617274808d90c7c0c83c5f98ae26981a37c2e144a90bb3321",
+    "accepted_gpu_smoke_output_root": "<path>/lingbot_world_v2",
+    "accepted_gpu_smoke_media_contract": "13/13 decodable; 832x464; 16 fps; exact 33/45/57/81/93 frame counts",
+    "accepted_gpu_smoke_control_review": "six atomic videos remain visibly active after the symmetric 0.75x yaw reduction; all seven complex routes remain active through their final boundary",
+    "full_final_gpu_evidence": "13_RECORD_YAW075_ADAPTER_SMOKE_ACCEPTED_FULL_528_GENERATION_PENDING",
+    "full_v9_gpu_evidence": "PENDING_V9_PILOT",
+    "v10_scope": "30 scenes / 134 cases; seed0 6 D16 atoms + 8 G1-G4 routes; seed1/2 6 D16 atoms; D16 carries four unscored final hold frames for native 3-latent chunk alignment"
+  }
+}
